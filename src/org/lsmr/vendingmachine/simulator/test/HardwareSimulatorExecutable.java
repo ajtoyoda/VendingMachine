@@ -1,7 +1,5 @@
 package org.lsmr.vendingmachine.simulator.test;
 
-import java.util.Scanner;
-
 import org.lsmr.vendingmachine.simulator.*;
 import org.lsmr.vendingmachine.simulator.GUI.*;
 
@@ -16,14 +14,16 @@ public class HardwareSimulatorExecutable {
 		HardwareSimulator myMachine = Setup.setup(coinValues, popCosts, popNames);
 		new VendingMachineGUI(myMachine);
 
-		try {
-			myMachine.getPopCanRack(1).addPop(new PopCan());
-		} catch (CapacityExceededException e1) {
-			e1.printStackTrace();
-		} catch (DisabledException e1) {
-			e1.printStackTrace();
+		for(int i = 0; i < 9; i ++){
+			for(int j = 0; j < 5; j++)
+				myMachine.getPopCanRack(i).loadWithoutEvents(new PopCan());	
+		}	
+		for(int i = 0; i <myMachine.getCoinValues().length; i++){
+			for(int j = 0; j< 5; j++)
+				myMachine.getCoinRack(i).loadWithoutEvents(new Coin(myMachine.getCoinValues()[i]));
 		}
-		Scanner sc = new Scanner(System.in);
+
+		/*Scanner sc = new Scanner(System.in);
 		while (true) {
 			System.out.println("Please select from the following choices:");
 			System.out.println("1 - Enter coin");
@@ -66,6 +66,6 @@ public class HardwareSimulatorExecutable {
 				break;
 			}
 		}
-		sc.close();
+		sc.close();*/
 	}
 }

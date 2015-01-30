@@ -57,6 +57,7 @@ public class DispenserController extends
 			try {
 				if(makeChange(currentStorage.valueOfCoins()-button.getCost())){
 					popRack.dispensePop();
+					currentStorage.storeCoins();
 				}
 			} catch (DisabledException e) {
 				// No Requirement on disabled yet

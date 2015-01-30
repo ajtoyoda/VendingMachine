@@ -3,6 +3,8 @@ package org.lsmr.vendingmachine.simulator.assignment1;
 import org.lsmr.vendingmachine.simulator.Coin;
 import org.lsmr.vendingmachine.simulator.CoinReceptacleListener;
 import org.lsmr.vendingmachine.simulator.CoinReceptacleSimulator;
+import org.lsmr.vendingmachine.simulator.DeliveryChuteListener;
+import org.lsmr.vendingmachine.simulator.DeliveryChuteSimulator;
 import org.lsmr.vendingmachine.simulator.DispenserControllerListener;
 import org.lsmr.vendingmachine.simulator.DisplaySimulator;
 import org.lsmr.vendingmachine.simulator.DisplaySimulatorListener;
@@ -12,7 +14,7 @@ import org.lsmr.vendingmachine.simulator.PopCanRackSimulator;
 
 public class DisplayController extends AbstractStub implements
 		PopCanRackListener, CoinReceptacleListener, DisplaySimulatorListener,
-		DispenserControllerListener {
+		DispenserControllerListener, DeliveryChuteListener {
 	private DisplaySimulator display;
 
 	public DisplayController(DisplaySimulator display) {
@@ -103,5 +105,29 @@ public class DisplayController extends AbstractStub implements
 	@Override
 	public void notExactChange(DispenserController control) {
 		display.display("Notice: Cannot Make Exact Change");
+	}
+
+	@Override
+	public void itemDelivered(DeliveryChuteSimulator chute) {
+		display.display("Notice: Recieved " +chute.toString());
+		
+	}
+
+	@Override
+	public void doorOpened(DeliveryChuteSimulator chute) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void doorClosed(DeliveryChuteSimulator chute) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void chuteFull(DeliveryChuteSimulator chute) {
+		// TODO Auto-generated method stub
+		
 	}
 }

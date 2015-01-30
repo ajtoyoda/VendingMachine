@@ -13,7 +13,6 @@ import javax.swing.JLabel;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
 import org.lsmr.vendingmachine.simulator.*;
 
 public class VendingMachineGUI {
@@ -23,6 +22,7 @@ public class VendingMachineGUI {
 	private JButton Pop_1, Pop_2, Pop_3, Pop_4, Pop_5,
                     Pop_6, Pop_7, Pop_8, Pop_9, Pop_10;
 	private JButton coinReturn, Exit; 
+	private JButton takeItems;
 
 	/**
 	 * Launch the application.
@@ -302,7 +302,17 @@ public class VendingMachineGUI {
 				}
 			}
 		});
-
+		//Take items button
+		takeItems = new JButton("Take Items");
+		myFrame.getContentPane().add(takeItems, getNewConstraints(1,9,1,1,1.0,1.0, centerInt, fillBothInt,myInsets, 0,0));
+		takeItems.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e1){
+				Object[] items = myMachine.getDeliveryChute().removeItems();
+				for(Object item: items){
+						System.out.println("Removed: "+item);
+				}
+			}
+		});
 		//Exit button
 		Exit = new JButton("Exit");
 		//Exit.setBounds(179, 199, 78, 52);

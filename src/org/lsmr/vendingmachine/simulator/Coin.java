@@ -26,4 +26,7 @@ public class Coin {
 	public int getValue() {
 		return value;
 	}
+	public String toString(){
+		return ""+value;
+	}
 }
