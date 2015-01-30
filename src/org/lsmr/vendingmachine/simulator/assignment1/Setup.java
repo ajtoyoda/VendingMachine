@@ -1,11 +1,6 @@
-package org.lsmr.vendingmachine.simulator.test;
+package org.lsmr.vendingmachine.simulator.assignment1;
 
 import org.lsmr.vendingmachine.simulator.HardwareSimulator;
-import org.lsmr.vendingmachine.simulator.assignment1.CurrentPurchaseReceptacleController;
-import org.lsmr.vendingmachine.simulator.assignment1.DispenserController;
-import org.lsmr.vendingmachine.simulator.assignment1.DisplayController;
-import org.lsmr.vendingmachine.simulator.assignment1.ExactChangeLightController;
-import org.lsmr.vendingmachine.simulator.assignment1.OutOfOrderLightController;
 
 public class Setup {
 	public static HardwareSimulator setup(int[] coinValues, int[]popCosts, String[] popNames) {

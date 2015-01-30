@@ -1,4 +1,4 @@
-package org.lsmr.vendingmachine.simulator.test;
+package org.lsmr.vendingmachine.simulator.assignment1;
 
 import org.lsmr.vendingmachine.simulator.*;
 import org.lsmr.vendingmachine.simulator.GUI.*;
