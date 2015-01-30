@@ -244,7 +244,7 @@ public class VendingMachineGUI {
 				myInsets, 0, 0));
 		Pop_7.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0){
-				myMachine.getSelectionButton(5).press();
+				myMachine.getSelectionButton(6).press();
 			}
 		});
 
@@ -256,7 +256,7 @@ public class VendingMachineGUI {
 				myInsets, 0, 0));
 		Pop_8.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0){
-				myMachine.getSelectionButton(5).press();
+				myMachine.getSelectionButton(7).press();
 			}
 		});
 
@@ -268,7 +268,7 @@ public class VendingMachineGUI {
 				myInsets, 0, 0));
 		Pop_9.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0){
-				myMachine.getSelectionButton(5).press();
+				myMachine.getSelectionButton(8).press();
 			}
 		});
 
@@ -280,7 +280,7 @@ public class VendingMachineGUI {
 				myInsets, 0, 0));
 		Pop_10.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0){
-				myMachine.getSelectionButton(5).press();
+				myMachine.getSelectionButton(9).press();
 			}
 		});
 
