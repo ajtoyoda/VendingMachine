@@ -17,7 +17,7 @@ public class ExactChangeLightControllerTest {
 	//This will happen before each and every test case
 	@Before
 	public void setup(){
-		indicatorLight = new IndicatorLightSimulator();
+		indicatorLight = new IndicatorLightSimulator("");
 		exactLight = new ExactChangeLightController(indicatorLight);
 	}
 	//This will happen after each and every test case

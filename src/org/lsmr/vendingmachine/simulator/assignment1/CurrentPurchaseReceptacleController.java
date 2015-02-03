@@ -20,8 +20,8 @@ public class CurrentPurchaseReceptacleController extends AbstractStub implements
 			try {
 				currentPurchaseReceptacle.returnCoins();
 			} catch (CapacityExceededException e) {
+				
 				// this happens when the removal location is full not sure what to do about it though. not really specified or realistic (capacity is like 10000)
-				e.printStackTrace();
 			} catch (DisabledException e) {
 				// TODO handle exception
 				e.printStackTrace();

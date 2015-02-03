@@ -1,5 +1,7 @@
 package org.lsmr.vendingmachine.simulator;
 
+import org.lsmr.vendingmachine.simulator.assignment1.HardwareSimulatorExecutable;
+
 /**
  * A simple device that displays a string. How it does this is not part of the
  * simulation. A very long string might scroll continuously, for example.
@@ -15,8 +17,12 @@ public class DisplaySimulator extends
 	public void display(String msg) {
 		String oldMsg = message;
 		message = msg;
+		HardwareSimulatorExecutable.out.print(msg);
 		System.out.println(msg);
 		notifyMessageChange(oldMsg, msg);
+	}
+	public void blank(){
+		display("|");
 	}
 
 	/**

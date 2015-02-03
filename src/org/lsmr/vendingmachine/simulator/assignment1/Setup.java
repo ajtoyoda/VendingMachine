@@ -32,7 +32,7 @@ public class Setup {
 		}
 
 		OutOfOrderLightController lightControl = new OutOfOrderLightController(
-				vm);
+				vm, vm.getOutOfOrderLight());
 
 		vm.getReturnButton().register(currentPurchase);
 		vm.getDisplay().register(displayControl);

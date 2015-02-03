@@ -1,8 +1,10 @@
 package org.lsmr.vendingmachine.simulator.GUI;
 
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JTextField;
 import javax.swing.ImageIcon;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -13,71 +15,103 @@ import javax.swing.JLabel;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.lsmr.vendingmachine.simulator.*;
 
-public class VendingMachineGUI {
+public class VendingMachineGUI implements IndicatorLightSimulatorListener {
 
 	private JFrame myFrame;
-	private JTextField myLCDscreen;
-	private JButton Pop_1, Pop_2, Pop_3, Pop_4, Pop_5,
-                    Pop_6, Pop_7, Pop_8, Pop_9, Pop_10;
-	private JButton coinReturn, Exit; 
+	//private JTextField myLCDscreen;
+	private JButton Pop_1, Pop_2, Pop_3, Pop_4, Pop_5, Pop_6, Pop_7, Pop_8,
+			Pop_9, Pop_10;
+	private JButton coinReturn, Exit;
 	private JButton takeItems;
+	private JTextArea textPane, textPane2;
+	private JCheckBox outOfOrderLight, exactChangeLight;
+	// Used to redirect stdout to GUI
+	private OutputStream out;
 
 	/**
 	 * Launch the application.
-	 *
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					VendingMachineGUI window = new VendingMachineGUI();
-					window.myFrame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}*/
+	 * 
+	 * public static void main(String[] args) { EventQueue.invokeLater(new
+	 * Runnable() { public void run() { try { VendingMachineGUI window = new
+	 * VendingMachineGUI(); window.myFrame.setVisible(true); } catch (Exception
+	 * e) { e.printStackTrace(); } } }); }
+	 */
 
 	/**
 	 * Create the GUI.
 	 */
-	public VendingMachineGUI(final HardwareSimulator myMachine){
+	public VendingMachineGUI(final HardwareSimulator myMachine) {
+		out = new OutputStream() {
+			@Override
+			public void write(int b) throws IOException {
+				updateTextPane(String.valueOf((char) b), 0);
+			}
+
+			@Override
+			public void write(byte[] b, int off, int len) throws IOException {
+				if(new String(b,off,len).contains("Notice")|| new String(b, off,len).contains("|"))
+					updateTextPane(new String(b, off, len), 0);
+				else{
+					updateTextPane(new String(b, off, len), 1);
+				}
+
+			}
+
+			@Override
+			public void write(byte[] b) throws IOException {
+				write(b, 0, b.length);
+			}
+		};
 		myFrame = new JFrame();
-		//Set the size of our window, and center it in the screen
+		// Set the size of our window, and center it in the screen
 		myFrame.setSize(550, 610);
 		myFrame.setLocationRelativeTo(null);
 		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//Use the GridBag layout manager
+		// Use the GridBag layout manager
 		myFrame.getContentPane().setLayout(new GridBagLayout());
 		Insets myInsets = new Insets(0, 0, 0, 0);
 		int centerInt = GridBagConstraints.CENTER;
 		int northeastInt = GridBagConstraints.NORTHEAST;
 		int fillBothInt = GridBagConstraints.BOTH;
 		int fillNoneInt = GridBagConstraints.NONE;
-		
-		//Create LCD screen
-		myLCDscreen = new JTextField();
+
+		// Create LCD screen
+		/*myLCDscreen = new JTextField();
 		myLCDscreen.setText("Insert coins or select pop...");
 		myLCDscreen.setColumns(15);
 		myLCDscreen.setEditable(false);
-		myFrame.getContentPane().add(myLCDscreen,
-				getNewConstraints(0, 0, 3, 1, 1.0, 1.0, centerInt, GridBagConstraints.HORIZONTAL,
-				myInsets, 0, 0));
-		
-		//Coin entry label text
+		myFrame.getContentPane().add(
+				myLCDscreen,
+				getNewConstraints(0, 0, 3, 1, 1.0, 1.0, centerInt,
+						GridBagConstraints.HORIZONTAL, myInsets, 0, 0));
+		*/
+		//Updateable GUI display
+		textPane = new JTextArea();
+		textPane2= new JTextArea();
+		textPane.setVisible(true);
+		textPane.setVisible(true);
+		myFrame.getContentPane().add(textPane, getNewConstraints(0,0,2,1,1.0,1.0, centerInt, fillBothInt, myInsets, 0, 0));
+		myFrame.getContentPane().add(textPane2, getNewConstraints(2,0,1,1,1.0,1.0, centerInt, fillBothInt, myInsets,0,0));
+		// Coin entry label text
 		JLabel lblEnterCoin = new JLabel("Enter coin:");
-		myFrame.getContentPane().add(lblEnterCoin,
-				getNewConstraints(0, 1, 1, 3, 1.0, 1.0, northeastInt, fillNoneInt,
-				myInsets, 0, 0));
-		
+		myFrame.getContentPane().add(
+				lblEnterCoin,
+				getNewConstraints(0, 2, 1, 3, 1.0, 1.0, northeastInt,
+						fillNoneInt, myInsets, 0, 0));
 
-		//$0.05 button
+		// $0.05 button
 		JButton fiveCents = new JButton("$0.05");
-		myFrame.getContentPane().add(fiveCents,
-				getNewConstraints(1, 1, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
-				myInsets, 0, 0));
+		myFrame.getContentPane().add(
+				fiveCents,
+				getNewConstraints(1, 2, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
+						myInsets, 0, 0));
 		fiveCents.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Coin c = new Coin(5);
@@ -89,12 +123,13 @@ public class VendingMachineGUI {
 				}
 			}
 		});
-		
-		//$0.10 button
+
+		// $0.10 button
 		JButton tenCents = new JButton("$0.10");
-		myFrame.getContentPane().add(tenCents, 
-				getNewConstraints(2, 1, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
-				myInsets, 0, 0));
+		myFrame.getContentPane().add(
+				tenCents,
+				getNewConstraints(2, 2, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
+						myInsets, 0, 0));
 		tenCents.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Coin c = new Coin(10);
@@ -106,12 +141,13 @@ public class VendingMachineGUI {
 				}
 			}
 		});
-		
-		//$0.25 button
+
+		// $0.25 button
 		JButton twentyFiveCents = new JButton("$0.25");
-		myFrame.getContentPane().add(twentyFiveCents, 
-				getNewConstraints(1, 2, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
-				myInsets, 0, 0));
+		myFrame.getContentPane().add(
+				twentyFiveCents,
+				getNewConstraints(1, 3, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
+						myInsets, 0, 0));
 		twentyFiveCents.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Coin c = new Coin(25);
@@ -123,12 +159,13 @@ public class VendingMachineGUI {
 				}
 			}
 		});
-		
-		//$1.00 button
+
+		// $1.00 button
 		JButton oneDollar = new JButton("$1.00");
-		myFrame.getContentPane().add(oneDollar, 
-				getNewConstraints(2, 2, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
-				myInsets, 0, 0));
+		myFrame.getContentPane().add(
+				oneDollar,
+				getNewConstraints(2, 3, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
+						myInsets, 0, 0));
 		oneDollar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Coin c = new Coin(100);
@@ -140,12 +177,13 @@ public class VendingMachineGUI {
 				}
 			}
 		});
-		
-		//$2.00 button
+
+		// $2.00 button
 		JButton twoDollars = new JButton("$2.00");
-		myFrame.getContentPane().add(twoDollars, 
-				getNewConstraints(1, 3, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
-				myInsets, 0, 0));
+		myFrame.getContentPane().add(
+				twoDollars,
+				getNewConstraints(1, 4, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
+						myInsets, 0, 0));
 		twoDollars.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Coin c = new Coin(200);
@@ -158,137 +196,168 @@ public class VendingMachineGUI {
 			}
 		});
 
-		//Pop selection label text
+		// Pop selection label text
 		JLabel lblSelectPop = new JLabel("Select pop:");
-		myFrame.getContentPane().add(lblSelectPop,
-				getNewConstraints(0, 4, 1, 3, 1.0, 1.0, northeastInt, fillNoneInt,
-				myInsets, 0, 0));
+		myFrame.getContentPane().add(
+				lblSelectPop,
+				getNewConstraints(0, 5, 1, 3, 1.0, 1.0, northeastInt,
+						fillNoneInt, myInsets, 0, 0));
 
-		//First pop button
-		//Pop_1 = new JButton(myMachine.getPopNameAt(0));
-		Pop_1 = new JButton(new ImageIcon(getClass().getResource("Icons/1.png"), myMachine.getPopNameAt(0)));
-		myFrame.getContentPane().add(Pop_1, 
-				getNewConstraints(1, 4, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
-				myInsets, 0, 0));
-		Pop_1.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0){
+		// First pop button
+		// Pop_1 = new JButton(myMachine.getPopNameAt(0));
+		Pop_1 = new JButton(new ImageIcon(
+				getClass().getResource("Icons/1.png"),
+				myMachine.getPopNameAt(0)));
+		myFrame.getContentPane().add(
+				Pop_1,
+				getNewConstraints(1, 5, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
+						myInsets, 0, 0));
+		Pop_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				myMachine.getSelectionButton(0).press();
 			}
 		});
 
-		//Second pop button
-		//Pop_2 = new JButton(myMachine.getPopNameAt(1));
-		Pop_2 = new JButton(new ImageIcon(getClass().getResource("Icons/2.jpg"), myMachine.getPopNameAt(1)));
-		myFrame.getContentPane().add(Pop_2, 
-				getNewConstraints(2, 4, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
-				myInsets, 0, 0));
-		Pop_2.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0){
+		// Second pop button
+		// Pop_2 = new JButton(myMachine.getPopNameAt(1));
+		Pop_2 = new JButton(new ImageIcon(
+				getClass().getResource("Icons/2.jpg"),
+				myMachine.getPopNameAt(1)));
+		myFrame.getContentPane().add(
+				Pop_2,
+				getNewConstraints(2, 5, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
+						myInsets, 0, 0));
+		Pop_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				myMachine.getSelectionButton(1).press();
 			}
 		});
 
-		//Third pop button
-		//Pop_3 = new JButton(myMachine.getPopNameAt(2));
-		Pop_3 = new JButton(new ImageIcon(getClass().getResource("Icons/3.jpg"), myMachine.getPopNameAt(2)));
-		myFrame.getContentPane().add(Pop_3, 
-				getNewConstraints(1, 5, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
-				myInsets, 0, 0));
-		Pop_3.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0){
+		// Third pop button
+		// Pop_3 = new JButton(myMachine.getPopNameAt(2));
+		Pop_3 = new JButton(new ImageIcon(
+				getClass().getResource("Icons/3.jpg"),
+				myMachine.getPopNameAt(2)));
+		myFrame.getContentPane().add(
+				Pop_3,
+				getNewConstraints(1, 6, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
+						myInsets, 0, 0));
+		Pop_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				myMachine.getSelectionButton(2).press();
 			}
 		});
 
-		//Fourth pop button
-		//Pop_4 = new JButton(myMachine.getPopNameAt(3));
-		Pop_4 = new JButton(new ImageIcon(getClass().getResource("Icons/4.jpg"), myMachine.getPopNameAt(3)));
-		myFrame.getContentPane().add(Pop_4, 
-				getNewConstraints(2, 5, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
-				myInsets, 0, 0));
-		Pop_4.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0){
+		// Fourth pop button
+		// Pop_4 = new JButton(myMachine.getPopNameAt(3));
+		Pop_4 = new JButton(new ImageIcon(
+				getClass().getResource("Icons/4.jpg"),
+				myMachine.getPopNameAt(3)));
+		myFrame.getContentPane().add(
+				Pop_4,
+				getNewConstraints(2, 6, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
+						myInsets, 0, 0));
+		Pop_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				myMachine.getSelectionButton(3).press();
 			}
 		});
 
-		//Fifth pop button
-		//Pop_5 = new JButton(myMachine.getPopNameAt(4));
-		Pop_5 = new JButton(new ImageIcon(getClass().getResource("Icons/5.png"), myMachine.getPopNameAt(4)));
-		myFrame.getContentPane().add(Pop_5, 
-				getNewConstraints(1, 6, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
-				myInsets, 0, 0));
-		Pop_5.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0){
+		// Fifth pop button
+		// Pop_5 = new JButton(myMachine.getPopNameAt(4));
+		Pop_5 = new JButton(new ImageIcon(
+				getClass().getResource("Icons/5.png"),
+				myMachine.getPopNameAt(4)));
+		myFrame.getContentPane().add(
+				Pop_5,
+				getNewConstraints(1, 7, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
+						myInsets, 0, 0));
+		Pop_5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				myMachine.getSelectionButton(4).press();
 			}
 		});
 
-		//Sixth pop button
-		//Pop_6 = new JButton(myMachine.getPopNameAt(5));
-		Pop_6 = new JButton(new ImageIcon(getClass().getResource("Icons/6.jpg"), myMachine.getPopNameAt(5)));
-		myFrame.getContentPane().add(Pop_6, 
-				getNewConstraints(2, 6, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
-				myInsets, 0, 0));
-		Pop_6.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0){
+		// Sixth pop button
+		// Pop_6 = new JButton(myMachine.getPopNameAt(5));
+		Pop_6 = new JButton(new ImageIcon(
+				getClass().getResource("Icons/6.jpg"),
+				myMachine.getPopNameAt(5)));
+		myFrame.getContentPane().add(
+				Pop_6,
+				getNewConstraints(2, 7, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
+						myInsets, 0, 0));
+		Pop_6.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				myMachine.getSelectionButton(5).press();
 			}
 		});
 
-		//Seventh pop button
-		//Pop_7 = new JButton(myMachine.getPopNameAt(6));
-		Pop_7 = new JButton(new ImageIcon(getClass().getResource("Icons/7.jpg"), myMachine.getPopNameAt(6)));
-		myFrame.getContentPane().add(Pop_7, 
-				getNewConstraints(1, 7, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
-				myInsets, 0, 0));
-		Pop_7.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0){
+		// Seventh pop button
+		// Pop_7 = new JButton(myMachine.getPopNameAt(6));
+		Pop_7 = new JButton(new ImageIcon(
+				getClass().getResource("Icons/7.jpg"),
+				myMachine.getPopNameAt(6)));
+		myFrame.getContentPane().add(
+				Pop_7,
+				getNewConstraints(1, 8, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
+						myInsets, 0, 0));
+		Pop_7.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				myMachine.getSelectionButton(6).press();
 			}
 		});
 
-		//Eigth pop button
-		//Pop_8 = new JButton(myMachine.getPopNameAt(7));
-		Pop_8 = new JButton(new ImageIcon(getClass().getResource("Icons/8.jpg"), myMachine.getPopNameAt(7)));
-		myFrame.getContentPane().add(Pop_8, 
-				getNewConstraints(2, 7, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
-				myInsets, 0, 0));
-		Pop_8.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0){
+		// Eigth pop button
+		// Pop_8 = new JButton(myMachine.getPopNameAt(7));
+		Pop_8 = new JButton(new ImageIcon(
+				getClass().getResource("Icons/8.jpg"),
+				myMachine.getPopNameAt(7)));
+		myFrame.getContentPane().add(
+				Pop_8,
+				getNewConstraints(2, 8, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
+						myInsets, 0, 0));
+		Pop_8.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				myMachine.getSelectionButton(7).press();
 			}
 		});
 
-		//Ninth pop button
-		//Pop_9 = new JButton(myMachine.getPopNameAt(8));
-		Pop_9 = new JButton(new ImageIcon(getClass().getResource("Icons/9.png"), myMachine.getPopNameAt(8)));
-		myFrame.getContentPane().add(Pop_9, 
-				getNewConstraints(1, 8, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
-				myInsets, 0, 0));
-		Pop_9.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0){
+		// Ninth pop button
+		// Pop_9 = new JButton(myMachine.getPopNameAt(8));
+		Pop_9 = new JButton(new ImageIcon(
+				getClass().getResource("Icons/9.png"),
+				myMachine.getPopNameAt(8)));
+		myFrame.getContentPane().add(
+				Pop_9,
+				getNewConstraints(1, 9, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
+						myInsets, 0, 0));
+		Pop_9.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				myMachine.getSelectionButton(8).press();
 			}
 		});
 
-		//Tenth pop button
-		//Pop_10 = new JButton(myMachine.getPopNameAt(9));
-		Pop_10 = new JButton(new ImageIcon(getClass().getResource("Icons/10.jpg"), myMachine.getPopNameAt(9)));
-		myFrame.getContentPane().add(Pop_10, 
-				getNewConstraints(2, 8, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
-				myInsets, 0, 0));
-		Pop_10.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0){
+		// Tenth pop button
+		// Pop_10 = new JButton(myMachine.getPopNameAt(9));
+		Pop_10 = new JButton(new ImageIcon(getClass().getResource(
+				"Icons/10.jpg"), myMachine.getPopNameAt(9)));
+		myFrame.getContentPane().add(
+				Pop_10,
+				getNewConstraints(2, 9, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
+						myInsets, 0, 0));
+		Pop_10.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				myMachine.getSelectionButton(9).press();
 			}
 		});
 
-		//Coin return button
+		// Coin return button
 		coinReturn = new JButton("Coin Return");
-		myFrame.getContentPane().add(coinReturn, 
-				getNewConstraints(0, 9, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
-				myInsets, 0, 0));
+		myFrame.getContentPane().add(
+				coinReturn,
+				getNewConstraints(0, 10, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
+						myInsets, 0, 0));
 		coinReturn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e1) {
 				try {
@@ -302,58 +371,129 @@ public class VendingMachineGUI {
 				}
 			}
 		});
-		//Take items button
+		// Take items button
 		takeItems = new JButton("Take Items");
-		myFrame.getContentPane().add(takeItems, getNewConstraints(1,9,1,1,1.0,1.0, centerInt, fillBothInt,myInsets, 0,0));
-		takeItems.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e1){
+		myFrame.getContentPane().add(
+				takeItems,
+				getNewConstraints(1, 10, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
+						myInsets, 0, 0));
+		takeItems.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e1) {
 				Object[] items = myMachine.getDeliveryChute().removeItems();
-				for(Object item: items){
-						System.out.println("Removed: "+item);
+				for (Object item : items) {
+					System.out.println("Removed: " + item);
 				}
 			}
 		});
-		//Exit button
+		// Exit button
 		Exit = new JButton("Exit");
-		//Exit.setBounds(179, 199, 78, 52);
-		myFrame.getContentPane().add(Exit, 
-				getNewConstraints(2, 9, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
-				myInsets, 0, 0));
+		// Exit.setBounds(179, 199, 78, 52);
+		myFrame.getContentPane().add(
+				Exit,
+				getNewConstraints(2, 10, 1, 1, 1.0, 1.0, centerInt, fillBothInt,
+						myInsets, 0, 0));
 		Exit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e2){
+			public void actionPerformed(ActionEvent e2) {
 				myFrame.dispose();
-				
+
 			}
 		});
-		
-		/*class Mylistener implements ActionListener{
-			private int buttonName;
-			Mylistener(int buttonName){
-				this.buttonName = buttonName;
-			}
-			public void actionPerformed(ActionEvent e) {
-				int total_coin = 0;
-				switch(buttonName){
-				case 0:
-					total_coin = total_coin + buttonName;
-					myLCDscreen.setText("You've entered " + total_coin + " dollars");
-				}
-				
-			}
-			
-		}*/
+
+		exactChangeLight = new JCheckBox("ExactChange");
+		exactChangeLight.setEnabled(false);
+		exactChangeLight.setVisible(true);
+		myFrame.getContentPane().add(exactChangeLight, getNewConstraints(0,1,2,1,1.0,1.0, centerInt, fillBothInt, myInsets, 0,0));
+		outOfOrderLight	= new JCheckBox("OutOfOrder");
+		outOfOrderLight.setEnabled(false);
+		outOfOrderLight.setVisible(true);
+		myFrame.getContentPane().add(outOfOrderLight, getNewConstraints(2,1,1,1,1.0,1.0, centerInt, fillBothInt, myInsets, 0,0));
+		/*
+		 * class Mylistener implements ActionListener{ private int buttonName;
+		 * Mylistener(int buttonName){ this.buttonName = buttonName; } public
+		 * void actionPerformed(ActionEvent e) { int total_coin = 0;
+		 * switch(buttonName){ case 0: total_coin = total_coin + buttonName;
+		 * myLCDscreen.setText("You've entered " + total_coin + " dollars"); }
+		 * 
+		 * }
+		 * 
+		 * }
+		 */
 		myFrame.setVisible(true);
 	}
-	
-	//This function lets us avoid having to make a new GridBagConstraints
-	//object every time
-	public GridBagConstraints getNewConstraints(
-			int cellX, int cellY,
-			int cellHeight, int cellWidth,
-			double weightX, double weightY,
-			int anchor, int fill,
-			Insets ins, int padX, int padY){
+
+	private void updateTextPane(final String text, int paneNumber) {
+		if(paneNumber==0){
+			textPane.setText(text);
+		}else{
+			textPane2.setText(text);
+		}
+	}
+
+	public OutputStream getOutputStream(){
+		return out;
+	}
+	// This function lets us avoid having to make a new GridBagConstraints
+	// object every time
+	public GridBagConstraints getNewConstraints(int cellX, int cellY,
+			int cellHeight, int cellWidth, double weightX, double weightY,
+			int anchor, int fill, Insets ins, int padX, int padY) {
 		return new GridBagConstraints(cellX, cellY, cellHeight, cellWidth,
 				weightX, weightY, anchor, fill, ins, padX, padY);
+	}
+
+	@Override
+	public void enabled(AbstractHardware<AbstractHardwareListener> hardware) {
+		
+	}
+
+	@Override
+	public void disabled(AbstractHardware<AbstractHardwareListener> hardware) {
+		
+	}
+
+	@Override
+	public void activated(IndicatorLightSimulator light) {
+		if(light.getName().compareTo("OutOfOrder")==0){
+			SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run() {
+					outOfOrderLight.setSelected(true);
+				}
+			});
+		}else if(light.getName().compareTo("ExactChange")==0){
+			SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run() {
+					exactChangeLight.setSelected(true);
+					final Timer timer = new Timer();
+					timer.schedule(new TimerTask() {
+						@Override
+						public void run() {
+							deactivated(new IndicatorLightSimulator("ExactChange"));
+							timer.cancel();
+						}
+					}, 5000);
+				}
+			});
+		}
+	}
+
+	@Override
+	public void deactivated(IndicatorLightSimulator light) {
+		if(light.getName().compareTo("OutOfOrder")==0){
+			SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run() {
+					outOfOrderLight.setSelected(true);
+				}
+			});
+		}else if(light.getName().compareTo("ExactChange")==0){
+			SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run() {
+					exactChangeLight.setSelected(false);
+				}
+			});
+		}
 	}
 }

@@ -6,8 +6,12 @@ package org.lsmr.vendingmachine.simulator;
  */
 public class IndicatorLightSimulator extends
 		AbstractHardware<IndicatorLightSimulatorListener> {
+	private String name;
 	private boolean on = false;
 
+	public IndicatorLightSimulator(String name){
+		this.name = name;
+	}
 	/**
 	 * Permits the initial state of the light to be on (when active is true) or
 	 * off (when active is false) without causing events to be generated.
@@ -41,6 +45,9 @@ public class IndicatorLightSimulator extends
 		return on;
 	}
 
+	public String getName(){
+		return name;
+	}
 	private void notifyActivated() {
 		Class<?>[] parameterTypes = new Class<?>[] { IndicatorLightSimulator.class };
 		Object[] args = new Object[] { this };

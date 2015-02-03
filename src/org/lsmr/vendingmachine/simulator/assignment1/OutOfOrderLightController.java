@@ -4,13 +4,17 @@ import org.lsmr.vendingmachine.simulator.CoinReceptacleListener;
 import org.lsmr.vendingmachine.simulator.CoinReceptacleSimulator;
 import org.lsmr.vendingmachine.simulator.HardwareSimulator;
 import org.lsmr.vendingmachine.simulator.Coin;
+import org.lsmr.vendingmachine.simulator.IndicatorLightSimulator;
 
 public class OutOfOrderLightController extends AbstractStub implements
 		CoinReceptacleListener {
 	private HardwareSimulator sim;
+	private IndicatorLightSimulator outOfOrderLight;
 
-	public OutOfOrderLightController(HardwareSimulator simulator) {
+	public OutOfOrderLightController(HardwareSimulator simulator, IndicatorLightSimulator outOfOrderLight) {
 		sim = simulator;
+		this.outOfOrderLight = outOfOrderLight;
+		
 	}
 
 	@Override
@@ -21,11 +25,13 @@ public class OutOfOrderLightController extends AbstractStub implements
 	@Override
 	public void coinsFull(CoinReceptacleSimulator receptacle) {
 		sim.enableSafety();
+		outOfOrderLight.activate();
 	}
 
 	@Override
 	public void coinsRemoved(CoinReceptacleSimulator receptacle) {
 		sim.disableSafety();
+		outOfOrderLight.deactivate();
 
 	}
 

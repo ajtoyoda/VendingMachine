@@ -39,12 +39,11 @@ public class ExactChangeLightController implements DispenserControllerListener, 
 
 	@Override
 	public void pressed(SelectionButtonSimulator button) {
-		light.deactivate();
+		//light.deactivate();
 	}
 
 	@Override
 	public void purchaseMade(SelectPopButtonSimulator button) {
-		light.deactivate();
-		
+		//
 	}
 }

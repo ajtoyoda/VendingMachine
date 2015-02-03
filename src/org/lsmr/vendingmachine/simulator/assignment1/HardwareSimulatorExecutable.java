@@ -1,9 +1,12 @@
 package org.lsmr.vendingmachine.simulator.assignment1;
 
+import java.io.PrintStream;
+
 import org.lsmr.vendingmachine.simulator.*;
 import org.lsmr.vendingmachine.simulator.GUI.*;
 
 public class HardwareSimulatorExecutable {
+	public static PrintStream out;
 	public static void main(String[] args) {
 		int[] coinValues = { 5, 10, 25, 100, 200 };
 		int[] popCosts = { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
@@ -12,8 +15,11 @@ public class HardwareSimulatorExecutable {
 		System.out.println("Hardware simulator initializing.");
 		
 		HardwareSimulator myMachine = Setup.setup(coinValues, popCosts, popNames);
-		new VendingMachineGUI(myMachine);
-
+		VendingMachineGUI vmGUI = new VendingMachineGUI(myMachine);
+		myMachine.getExactChangeLight().register(vmGUI);
+		myMachine.getOutOfOrderLight().register(vmGUI);
+		//new VendingMachineGUI(myMachine);
+		out = new PrintStream(vmGUI.getOutputStream(),true);
 		for(int i = 0; i < 9; i ++){
 			for(int j = 0; j < 5; j++)
 				myMachine.getPopCanRack(i).loadWithoutEvents(new PopCan());	

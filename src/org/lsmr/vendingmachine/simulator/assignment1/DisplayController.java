@@ -1,5 +1,8 @@
 package org.lsmr.vendingmachine.simulator.assignment1;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.lsmr.vendingmachine.simulator.Coin;
 import org.lsmr.vendingmachine.simulator.CoinReceptacleListener;
 import org.lsmr.vendingmachine.simulator.CoinReceptacleSimulator;
@@ -46,29 +49,41 @@ public class DisplayController extends AbstractStub implements
 		String finalString = new String("$");
 		int dollars = receptacle.valueOfCoins() / 100;
 		int cents = receptacle.valueOfCoins() % 100;
-		if(dollars < 1){finalString += "0.";}else{finalString += (dollars + ".");}
-		if(cents < 10){finalString += ("0" + cents);}else{finalString += cents;}
+		if (dollars < 1) {
+			finalString += "0.";
+		} else {
+			finalString += (dollars + ".");
+		}
+		if (cents < 10) {
+			finalString += ("0" + cents);
+		} else {
+			finalString += cents;
+		}
 		display.display(finalString);
 	}
 
 	@Override
-	public void messageChange(DisplaySimulator display, String oldMsg,
-			String newMsg) {
+	public void messageChange(final DisplaySimulator display,
+			final String oldMsg, String newMsg) {
 		if (newMsg.contains("Notice: Not Enough Money")) {
-			try {
-				Thread.sleep(4000);
-			} catch (InterruptedException e) {
-				//
-			}
-			display.display(oldMsg);
-		}
-		else if (newMsg.contains("Notice:")) {
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				//
-			}
-			display.display(oldMsg);
+			final Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					display.blank();
+					timer.cancel();
+				}
+			}, 4000);
+
+		} else if (newMsg.contains("Notice:")) {
+			final Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					display.blank();
+					timer.cancel();
+				}
+			}, 5000);
 		}
 	}
 
@@ -101,7 +116,7 @@ public class DisplayController extends AbstractStub implements
 		display.display("Notice: Not Enough Money. Selection Cost is: " + "$"
 				+ cost / 100 + "." + cost % 100);
 	}
-	
+
 	@Override
 	public void notExactChange(DispenserController control) {
 		display.display("Notice: Cannot Make Exact Change");
@@ -109,25 +124,25 @@ public class DisplayController extends AbstractStub implements
 
 	@Override
 	public void itemDelivered(DeliveryChuteSimulator chute) {
-		display.display("Notice: Recieved " +chute.toString());
-		
+		display.display("Notice: Recieved " + chute.toString());
+
 	}
 
 	@Override
 	public void doorOpened(DeliveryChuteSimulator chute) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void doorClosed(DeliveryChuteSimulator chute) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void chuteFull(DeliveryChuteSimulator chute) {
-		// TODO Auto-generated method stub
-		
+		display.display("Notice: Please remove all objects from chute and try again");
+
 	}
 }

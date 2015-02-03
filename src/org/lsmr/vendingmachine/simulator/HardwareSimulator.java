@@ -62,7 +62,7 @@ public class HardwareSimulator {
 	private int coinCosts[];
 	private String[] simplePopNamesArray;
 
-	protected static int deliveryChuteCapacity = 20;
+	protected static int deliveryChuteCapacity = 40;
 	protected static int coinReceptableCapacity = 50;
 	protected static int storageBinCapacity = 1000;
 	protected static int coinRackCapacity = 20;
@@ -130,8 +130,8 @@ public class HardwareSimulator {
 		receptacle.connect(coinRackChannels, new CoinChannelSimulator(deliveryChute),
 				new CoinChannelSimulator(storageBin));
 
-		exactChangeLight = new IndicatorLightSimulator();
-		outOfOrderLight = new IndicatorLightSimulator();
+		exactChangeLight = new IndicatorLightSimulator("ExactChange");
+		outOfOrderLight = new IndicatorLightSimulator("OutOfOrder");
 	}
 
 	/**
