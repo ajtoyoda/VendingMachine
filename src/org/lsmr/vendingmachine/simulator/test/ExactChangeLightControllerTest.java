@@ -31,7 +31,7 @@ public class ExactChangeLightControllerTest {
 		exactLight.notExactChange(new DispenserController(null,null,null,null));
 		assertTrue(indicatorLight.isActive());
 	}
-	@Test
+	/*@Test
 	public void testNextPurchaseTurnsLightOff(){
 		indicatorLight.activate();
 		exactLight.purchaseMade(null);
@@ -42,7 +42,7 @@ public class ExactChangeLightControllerTest {
 		indicatorLight.activate();
 		exactLight.pressed(null);
 		assertFalse(indicatorLight.isActive());
-	}
+	}*/
 
 	private ExactChangeLightController exactLight;
 	private IndicatorLightSimulator indicatorLight;

@@ -8,6 +8,7 @@ import org.lsmr.vendingmachine.simulator.SelectPopButtonListener;
 import org.lsmr.vendingmachine.simulator.SelectPopButtonSimulator;
 import org.lsmr.vendingmachine.simulator.SelectionButtonSimulator;
 
+//These extra implments are legacy and could be removed
 public class ExactChangeLightController implements DispenserControllerListener, SelectPopButtonListener{
 	IndicatorLightSimulator light;
 	
