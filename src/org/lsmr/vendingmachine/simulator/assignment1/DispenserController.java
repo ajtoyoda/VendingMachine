@@ -16,7 +16,11 @@ import org.lsmr.vendingmachine.simulator.CoinReceptacleSimulator;
 import org.lsmr.vendingmachine.simulator.SelectPopButtonListener;
 import org.lsmr.vendingmachine.simulator.SelectPopButtonSimulator;
 import org.lsmr.vendingmachine.simulator.SelectionButtonSimulator;
-
+/**
+ * This class controls a popRack and currentStorage during purchases. It notifies two events, not exact change and not enough money
+ * Its constructor arguments are a popRack, a mapping of the integer value of coins to the CoinRack which stores that value of coin and the
+ * coinValues
+ */
 public class DispenserController extends
 		AbstractHardware<DispenserControllerListener> implements
 		SelectPopButtonListener {
@@ -33,6 +37,11 @@ public class DispenserController extends
 		coinValues = coinValue;
 	}
 
+/**
+ * This function calculates difference between value needed and current purchasing value. If less it notifies notEnoughMoney
+ * If equal it vends a pop and stores coins. If greater it attempts to make change. If making change is possible it dispenses change
+ * then dispenses pop. If making change is not possible it notifies not exact change and keeps the money as current purchasing value
+ */
 	@Override
 	public void purchaseMade(SelectPopButtonSimulator button) {
 		if (currentStorage.valueOfCoins() == button.getCost()) {
@@ -104,12 +113,24 @@ public class DispenserController extends
 		// TODO Auto-generated method stub
 
 	}
+	
+	/**
+	 * This function calculates if it is possible to make change given the amount of change needed and current state of the CoinRacks
+	 * If it is possible it vends change
+	 * @param amountOfChange
+	 * The amount of change needed to be returned
+	 * @return
+	 * If it successfully made change
+	 */
 	private boolean makeChange(int amountOfChange){
+		//Sort coin values
 		ArrayList <Integer> sortedSet = new ArrayList <Integer>();
 		for(int i = 0; i < coinValues.length; i++){
 			sortedSet.add(coinValues[i]);
 		}
 		Collections.sort(sortedSet);
+		
+		//Coin Racks are sorted by value so should line up with the sortedSet
 		int numberNeeded[] = new int[sortedSet.size()];
 		for(int i = sortedSet.size()-1; i >=0; i--){
 			if(amountOfChange/sortedSet.get(i)< coinRackMap.get(sortedSet.get(i)).getAmount()){
@@ -120,10 +141,13 @@ public class DispenserController extends
 				amountOfChange = amountOfChange - coinRackMap.get(sortedSet.get(i)).getAmount()*sortedSet.get(i);
 			}
 		}
+		
+		//If amountOfChange is not equal to zero at this point change cannot be given
 		if(amountOfChange != 0){
 			notifyNotExactChange();
 			return false;
 		}
+		
 		//Release change
 		for(int i = sortedSet.size()-1; i>=0; i--){
 			for(int numberToRelease = 0; numberToRelease <numberNeeded[i]; numberToRelease++){

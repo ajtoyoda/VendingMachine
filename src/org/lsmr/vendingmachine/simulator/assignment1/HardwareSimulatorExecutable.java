@@ -20,7 +20,7 @@ public class HardwareSimulatorExecutable {
 		myMachine.getOutOfOrderLight().register(vmGUI);
 		//new VendingMachineGUI(myMachine);
 		out = new PrintStream(vmGUI.getOutputStream(),true);
-		for(int i = 0; i < 9; i ++){
+		for(int i = 0; i < 10; i ++){
 			for(int j = 0; j < 5; j++)
 				myMachine.getPopCanRack(i).loadWithoutEvents(new PopCan());	
 		}	

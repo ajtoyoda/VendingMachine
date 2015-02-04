@@ -182,10 +182,10 @@ public class DisplayControllerTest{
 	public void testNotEnoughMoneyEvent()
 	{
 		DispenserController control = new DispenserController(null, null, null, null);
-		Integer cost = 125; 
+		Integer cost = 120; 
 		displayController.notEnoughMoneyEvent(control, cost);
-		//assertEquals("Notice: Not Enough Money. Selection Cost is: $1.25", basicOutStream.toString());
-		assertEquals("Notice: Not Enough Money. Selection Cost is: $1.25", hardwareOutStream.toString());
+		//assertEquals("Notice: Not Enough Money. Selection Cost is: $1.20", basicOutStream.toString());
+		assertEquals("Notice: Not Enough Money. Selection Cost is: $1.20", hardwareOutStream.toString());
 	}
 	
 	@Test

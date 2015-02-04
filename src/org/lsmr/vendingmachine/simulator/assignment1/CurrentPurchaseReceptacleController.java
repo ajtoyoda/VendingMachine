@@ -6,6 +6,11 @@ import org.lsmr.vendingmachine.simulator.DisabledException;
 import org.lsmr.vendingmachine.simulator.SelectionButtonSimulator;
 import org.lsmr.vendingmachine.simulator.SelectionButtonSimulatorListener;
 
+/**
+ * This class controls the current purchase receptacle. It should be registered to return button only
+ * @author jamie
+ *
+ */
 public class CurrentPurchaseReceptacleController extends AbstractStub implements
 		SelectionButtonSimulatorListener {
 	private CoinReceptacleSimulator currentPurchaseReceptacle;
@@ -14,7 +19,9 @@ public class CurrentPurchaseReceptacleController extends AbstractStub implements
 			CoinReceptacleSimulator receptacle) {
 		currentPurchaseReceptacle = receptacle;
 	}
-
+	/**
+	 * If button it is listening to is pressed return coins
+	 */
 	public void pressed(SelectionButtonSimulator button) {
 		if (button.getName() == "return") {
 			try {

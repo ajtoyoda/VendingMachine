@@ -21,6 +21,9 @@ public class DisplaySimulator extends
 		System.out.println(msg);
 		notifyMessageChange(oldMsg, msg);
 	}
+	/**
+	 * Blanks the display
+	 */
 	public void blank(){
 		display("|");
 	}
@@ -33,6 +36,7 @@ public class DisplaySimulator extends
 		this.message = message;
 	}
 
+	
 	private void notifyMessageChange(String oldMsg, String newMsg) {
 		Class<?>[] parameterTypes = new Class<?>[] { DisplaySimulator.class,
 				String.class, String.class };

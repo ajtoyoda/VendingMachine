@@ -6,6 +6,11 @@ import org.lsmr.vendingmachine.simulator.HardwareSimulator;
 import org.lsmr.vendingmachine.simulator.Coin;
 import org.lsmr.vendingmachine.simulator.IndicatorLightSimulator;
 
+/**
+ * This class controls the OutOfOrderLight
+ * @author jamie
+ *
+ */
 public class OutOfOrderLightController extends AbstractStub implements
 		CoinReceptacleListener {
 	private HardwareSimulator sim;

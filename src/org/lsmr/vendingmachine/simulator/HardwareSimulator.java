@@ -294,7 +294,13 @@ public class HardwareSimulator {
 	public DisplaySimulator getDisplay() {
 		return display;
 	}
-	public Map<Integer,CoinRackSimulator> getCoinRacks(){
+	
+	/**
+	 * This function creates and returns a map of CoinRacks to coin values 
+	 * @return
+	 * Returns the map created
+	 */
+	public Map<Integer,CoinRackSimulator> getCoinRacksMap(){
 		Map<Integer, CoinRackSimulator> ret = new HashMap<Integer, CoinRackSimulator>(20);
 		int i = 0;
 		for(int coinCost: coinCosts){
@@ -302,6 +308,12 @@ public class HardwareSimulator {
 		}
 		return ret;
 	}
+	
+	/**
+	 * Returns coin values
+	 * @return
+	 * Value of coins allowed to be stored in Racks
+	 */
 	public int [] getCoinValues(){
 		return coinCosts;
 	}

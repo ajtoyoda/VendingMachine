@@ -15,6 +15,11 @@ import org.lsmr.vendingmachine.simulator.PopCan;
 import org.lsmr.vendingmachine.simulator.PopCanRackListener;
 import org.lsmr.vendingmachine.simulator.PopCanRackSimulator;
 
+/**
+ * This class controls the display and needs to listen to all object that display message
+ * @author jamie
+ *
+ */
 public class DisplayController extends AbstractStub implements
 		PopCanRackListener, CoinReceptacleListener, DisplaySimulatorListener,
 		DispenserControllerListener, DeliveryChuteListener {
@@ -44,6 +49,9 @@ public class DisplayController extends AbstractStub implements
 		display.display("Notice: Pop Rack Empty");
 	}
 
+	/**
+	 * Displays the coin value of the total amount of money available to purchase on the display
+	 */
 	@Override
 	public void coinAdded(CoinReceptacleSimulator receptacle, Coin coin) {
 		String finalString = new String("$");
@@ -62,6 +70,9 @@ public class DisplayController extends AbstractStub implements
 		display.display(finalString);
 	}
 
+	/**
+	 * Blanks the screen after a certain amount of time after giving a notice
+	 */
 	@Override
 	public void messageChange(final DisplaySimulator display,
 			final String oldMsg, String newMsg) {
@@ -110,11 +121,19 @@ public class DisplayController extends AbstractStub implements
 		// TODO Auto-generated method stub
 
 	}
-
+/**
+ * Prints the amount of money needed to buy pop when the user does not currently have enough money to purchase it
+ */
 	@Override
 	public void notEnoughMoneyEvent(DispenserController control, Integer cost) {
+		String centCost;
+		if(cost%100 < 10){
+			centCost = "0"+cost%100;
+		}else{
+			centCost = ""+cost % 100;
+		}
 		display.display("Notice: Not Enough Money. Selection Cost is: " + "$"
-				+ cost / 100 + "." + cost % 100);
+				+ cost / 100 + "." + centCost);
 	}
 
 	@Override

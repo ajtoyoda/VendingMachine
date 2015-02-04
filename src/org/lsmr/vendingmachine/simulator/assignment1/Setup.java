@@ -24,7 +24,7 @@ public class Setup {
 		//Registering each dispenser controller to the display
 		for (int i = 0; i < vm.getNumberOfPopCanRacks(); i++) {
 			dispenserControl[i] = new DispenserController(vm.getPopCanRack(i),
-					vm.getCoinReceptacle(), vm.getCoinRacks(), vm.getCoinValues());
+					vm.getCoinReceptacle(), vm.getCoinRacksMap(), vm.getCoinValues());
 			vm.getSelectionButton(i).register(dispenserControl[i]);
 			vm.getSelectionButton(i).register(exactChangeControl);
 			dispenserControl[i].register(displayControl);

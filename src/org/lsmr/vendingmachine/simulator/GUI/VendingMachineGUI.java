@@ -31,6 +31,8 @@ public class VendingMachineGUI implements IndicatorLightSimulatorListener {
 	private JCheckBox outOfOrderLight, exactChangeLight;
 	// Used to redirect stdout to GUI
 	private OutputStream out;
+	static private final int LEFTTEXTBOX=0;
+	static private final int RIGHTTEXTBOX=0;
 
 	/**
 	 * Launch the application.
@@ -54,9 +56,9 @@ public class VendingMachineGUI implements IndicatorLightSimulatorListener {
 			@Override
 			public void write(byte[] b, int off, int len) throws IOException {
 				if(new String(b,off,len).contains("Notice")|| new String(b, off,len).contains("|"))
-					updateTextPane(new String(b, off, len), 0);
+					updateTextPane(new String(b, off, len), LEFTTEXTBOX);
 				else{
-					updateTextPane(new String(b, off, len), 1);
+					updateTextPane(new String(b, off, len), RIGHTTEXTBOX);
 				}
 
 			}
@@ -419,9 +421,9 @@ public class VendingMachineGUI implements IndicatorLightSimulatorListener {
 	}
 
 	private void updateTextPane(final String text, int paneNumber) {
-		if(paneNumber==0){
+		if(paneNumber== LEFTTEXTBOX){
 			textPane.setText(text);
-		}else{
+		}else if(paneNumber==RIGHTTEXTBOX){
 			textPane2.setText(text);
 		}
 	}
