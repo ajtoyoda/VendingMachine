@@ -31,11 +31,12 @@ public class OutOfOrderLightControllerTest {
 	@Test
 	public void testTurnsLightOn() {
 		indicatorLight.deactivate();
+		didCall = false;
 		CoinReceptacleSimulator receptacle = new CoinReceptacleSimulator(1);
 		outOfOrderLightController = new OutOfOrderLightController(new HardwareSimulator(new int []{0}, new int[]{0}, new String []{""}){
 			@Override
 			public void enableSafety(){
-				assertEquals(true,true);
+				didCall = true;
 			}
 		}, indicatorLight);
 		receptacle.register(outOfOrderLightController);
@@ -48,12 +49,14 @@ public class OutOfOrderLightControllerTest {
 			e.printStackTrace();
 		}
 		assertTrue(indicatorLight.isActive());
+		assertTrue(didCall);
 	}
 	
 	@Test
 	public void testTurnsLightOff(){
 		//Start with light on
 		indicatorLight.activate();
+		didCall = false;
 		CoinReceptacleSimulator receptacle = new CoinReceptacleSimulator(1);
 		try {
 			receptacle.acceptCoin(new Coin(10));
@@ -65,7 +68,7 @@ public class OutOfOrderLightControllerTest {
 		outOfOrderLightController = new OutOfOrderLightController(new HardwareSimulator(new int []{0}, new int[]{0}, new String []{""}){
 			@Override
 			public void disableSafety(){
-				assertEquals(true,true);
+				didCall = true;
 			}
 		}, indicatorLight);
 		receptacle.register(outOfOrderLightController);
@@ -79,8 +82,11 @@ public class OutOfOrderLightControllerTest {
 		}
 		//Should fill receptacle
 		assertFalse(indicatorLight.isActive());
+		assertTrue(didCall);
+		
 	}
 	private OutOfOrderLightController outOfOrderLightController;
 	private IndicatorLightSimulator indicatorLight;
+	private boolean didCall;
 
 }
