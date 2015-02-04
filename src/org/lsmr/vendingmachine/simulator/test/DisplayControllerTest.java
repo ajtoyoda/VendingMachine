@@ -12,6 +12,7 @@ import org.lsmr.vendingmachine.simulator.DisplaySimulator;
 import org.lsmr.vendingmachine.simulator.PopCan;
 import org.lsmr.vendingmachine.simulator.PopCanRackSimulator;
 import org.lsmr.vendingmachine.simulator.assignment1.DisplayController;
+import org.lsmr.vendingmachine.simulator.assignment1.HardwareSimulatorExecutable;
 
 public class DisplayControllerTest{
 
@@ -19,13 +20,13 @@ public class DisplayControllerTest{
 	public void setup(){
 		display = new DisplaySimulator();
 		displayController = new DisplayController(display);
-		System.setOut(new PrintStream(outStream));
+		outStream = new ByteArrayOutputStream();
+		HardwareSimulatorExecutable.out = new PrintStream(outStream);
 	}
 	
 	//This will happen after each and every test case
 	@After
 	public void tearDown() {
-		System.setOut(null);
 	}
 	
 	@Test
@@ -34,7 +35,7 @@ public class DisplayControllerTest{
 		PopCanRackSimulator popRack = new PopCanRackSimulator(10);
 		PopCan pop = new PopCan();
 		displayController.popAdded(popRack, pop);
-		assertEquals("Notice: Pop Added Successfully\n", outStream.toString());
+		assertEquals("Notice: Pop Added Successfully", outStream.toString());
 	}
 	
 	@Test
@@ -43,7 +44,7 @@ public class DisplayControllerTest{
 		PopCanRackSimulator popRack = new PopCanRackSimulator(10);
 		PopCan pop = new PopCan();
 		displayController.popRemoved(popRack, pop);
-		assertEquals("Notice: Dispensing\n", outStream.toString());
+		assertEquals("Notice: Dispensing", outStream.toString());
 	}
 	
 	/*@Test
@@ -78,6 +79,6 @@ public class DisplayControllerTest{
 	
 	private DisplaySimulator display;
 	private DisplayController displayController;
-	private final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+	private ByteArrayOutputStream outStream;
 
 }
