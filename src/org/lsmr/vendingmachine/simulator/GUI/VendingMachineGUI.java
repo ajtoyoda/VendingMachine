@@ -17,9 +17,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import org.lsmr.vendingmachine.simulator.*;
 
 public class VendingMachineGUI implements IndicatorLightSimulatorListener {
@@ -465,14 +462,6 @@ public class VendingMachineGUI implements IndicatorLightSimulatorListener {
 				@Override
 				public void run() {
 					exactChangeLight.setSelected(true);
-					final Timer timer = new Timer();
-					timer.schedule(new TimerTask() {
-						@Override
-						public void run() {
-							deactivated(new IndicatorLightSimulator("ExactChange"));
-							timer.cancel();
-						}
-					}, 5000);
 				}
 			});
 		}
